@@ -20,6 +20,10 @@ and authorized penetration testing only.**
 |--------|-------------|--------|
 | 🔥 **HTTP Flood Attack** | High-volume HTTP request flooding with full proxy support | ✅ Active |
 | ⚡ **TCP Flood Attack** | Raw TCP socket-based flood stress tests | ✅ Active |
+| 🌊 **UDP Flood Attackk** | Connectionless UDP packet bombardment | ✅ Active |
+| 🐢 **Slowloris Attackk** | Partial connection exhaustion attack | ✅ Active |
+| 📡 **ICMP Flood Attack** | ICMP/Ping flood for network testing | ✅ Active |
+| 🎭 **Mixed Attack** | Combined HTTP+TCP+UD | ✅ Active |
 | 🔄 **Proxy Rotation** | Supports HTTP/SOCKS4/SOCKS5 + authentication proxies | ✅ Active |
 | 🌐 **User-Agent Rotation** | Random user-agents on each request for evasion | ✅ Active |
 | 🧵 **Multi-Threading Engine** | Ultra-fast parallel attack execution | ✅ Active |
