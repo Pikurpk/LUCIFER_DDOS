@@ -16,6 +16,10 @@
 |---------|-------------|---------|
 | 🔥 **HTTP Flood Attack** | High-volume HTTP requests with proxy support | ✅ Active |
 | ⚡ **TCP Flood Attack** | Raw TCP packet flooding for network stress testing | ✅ Active |
+| 🌊 ** UDP Flood Attack** | Connectionless UDP packet bombardment | ✅ Active |
+| 🐢 ** Slowloris Attack** | Partial connection exhaustion attack | ✅ Active |
+| 📡 ** ICMP Flood Attack** | ICMP/Ping flood for network testing | ✅ Active |
+| 🎭 ** Mixed Attack** | Combined HTTP+TCP+UD | ✅ Active |
 | 🔄 **Proxy Rotation** | Multiple proxy formats with authentication support | ✅ Active |
 | 🌐 **User Agent Rotation** | Randomized user agents for each request | ✅ Active |
 | 🧵 **Multi-threading** | High-performance concurrent attacks | ✅ Active |
@@ -80,5 +84,6 @@ Telegram	    @pk_the_lucifer	                ✅ Active
 Facebook	    facebook.com/pk_the_lucifer 	✅ Active
 
 Made with ❤️ by Foysal
+
 
 </div> ```
