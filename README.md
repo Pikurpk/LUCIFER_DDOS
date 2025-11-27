@@ -36,10 +36,10 @@ and authorized penetration testing only.**
 ```bash
 pkg update && pkg upgrade -y
 pkg install python git -y
-git clone https://github.com/yourusername/LUCIFER_DDOS.git
+git clone https://github.com/pikurpk/LUCIFER_DDOS.git
 cd LUCIFER_DDOS
 pip install -r requirements.txt
-python main.py
+LUCIFER_DDOS.py
 ```
 
 ---
@@ -48,20 +48,20 @@ python main.py
 ```bash
 sudo apt update && sudo apt upgrade -y
 sudo apt install python3 python3-pip git -y
-git clone https://github.com/yourusername/LUCIFER_DDOS.git
+git clone https://github.com/pikurpk/LUCIFER_DDOS.git
 cd LUCIFER_DDOS
 pip3 install -r requirements.txt
-python3 main.py
+LUCIFER_DDOS.py
 ```
 
 ---
 
 ### 🪟 **Windows (CMD / PowerShell)**
 ```bash
-git clone https://github.com/yourusername/LUCIFER_DDOS.git
+git clone https://github.com/pikurpk/LUCIFER_DDOS.git
 cd LUCIFER_DDOS
 pip install -r requirements.txt
-python main.py
+LUCIFER_DDOS.py
 ```
 
 ---
@@ -97,7 +97,7 @@ Enter password: ********
 
 ```
 LUCIFER_DDOS/
-│── main.py
+│── install.py
 │── LUCIFER_DDOS.py
 │── proxies.txt
 │── requirements.txt
@@ -125,7 +125,7 @@ LUCIFER_DDOS/
 | Platform | Link | Status |
 |----------|-------|---------|
 | **Telegram** | `@pk_the_lucifer` | 🟢 Active |
-| **Facebook** | facebook.com/pk_the_lucifer | 🟢 Active |
+| **Facebook** | www.facebook.com/pk_the_lucifer | 🟢 Active |
 
 **Made with ❤️ by Foysal**
 
