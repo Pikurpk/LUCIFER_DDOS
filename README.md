@@ -9,6 +9,7 @@
 
 **A high-performance DDoS testing toolkit built for learning, research,  
 and authorized penetration testing only.**
+**Developed By Foysal Islam Tushar**
 
 </div>
 
