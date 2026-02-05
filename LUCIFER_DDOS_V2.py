@@ -463,7 +463,7 @@ class AdvancedDDoSTools:
     ║                                                                  ║
     ║              ╔══════════════════════════════════════╗            ║
     ║              ║      LUCIFER DDOS v3.1 ADVANCED      ║            ║
-    ║              ║        [BUGS FIXED EDITION]         ║            ║
+    ║              ║        [MAKED BY FOYSAL ISLAM]       ║            ║
     ║              ╚══════════════════════════════════════╝            ║
     ╚══════════════════════════════════════════════════════════════════╝
     {RESET}{BLUE}
@@ -865,7 +865,7 @@ class AdvancedDDoSTools:
     def show_advanced_menu(self):
         print(f"""
 {CYAN}[=== LUCIFER DDOS v3.1 - ADVANCED MENU ===]{RESET}
-{CYAN}[1]{RESET} Advanced HTTP Flood         {CYAN}[6]{RESET} SSL/TLS Renegotiation
+{CYAN}[1]{RESET} Advanced HTTP Flood        {CYAN}[6]{RESET} SSL/TLS Renegotiation
 {CYAN}[2]{RESET} TCP SYN Flood              {CYAN}[7]{RESET} DNS Amplification
 {CYAN}[3]{RESET} UDP Amplification          {CYAN}[8]{RESET} Mixed Wave Attack
 {CYAN}[4]{RESET} Advanced Slowloris         {CYAN}[9]{RESET} Target Intelligence
