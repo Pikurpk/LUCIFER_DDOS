@@ -516,6 +516,8 @@ class AdvancedDDoSTools:
 
         self.attack_running = True
         self.requests_sent = 0
+        self.packets_sent = 0  # Add packets counter
+        self.bytes_sent = 0  # Add bytes counter
         self.start_time = time.time()
         stats_lock = threading.Lock()
 
@@ -556,16 +558,22 @@ class AdvancedDDoSTools:
 
                     with stats_lock:
                         self.requests_sent += 1
+                        # FIXED: Calculate approximate packets and bytes
+                        self.packets_sent += 2  # TCP SYN + ACK (approx)
+                        self.bytes_sent += len(response.content) if hasattr(response, 'content') else 1024
                         current = self.requests_sent
 
                     if current % 20 == 0:
                         elapsed = time.time() - self.start_time
                         rps = current / elapsed if elapsed > 0 else 0
-                        print(f"{GREEN}[🔥] Requests: {current} | RPS: {rps:.1f}{RESET}")
+                        print(
+                            f"{GREEN}[🔥] Requests: {current} | RPS: {rps:.1f} | Data: {self.bytes_sent / 1024 / 1024:.2f} MB{RESET}")
 
                 except Exception as e:
                     with stats_lock:
                         self.requests_sent += 1
+                        self.packets_sent += 1  # Failed attempt still counts as packet
+                        self.bytes_sent += 512  # Approximate failed request size
 
         print(f"{RED}[🚀] DEPLOYING ADVANCED HTTP FLOOD{RESET}")
 
@@ -802,62 +810,87 @@ class AdvancedDDoSTools:
                 elapsed = time.time() - self.start_time
                 remaining = duration - elapsed
 
-                if elapsed > 0:
-                    rps = self.requests_sent / elapsed if self.requests_sent > 0 else 0
-                    pps = self.packets_sent / elapsed if self.packets_sent > 0 else 0
-                    bps = self.bytes_sent / elapsed if self.bytes_sent > 0 else 0
-
+                # FIXED: Safe progress calculation
+                if duration > 0 and elapsed > 0:
                     progress = (elapsed / duration) * 100
-                    bars = "█" * int(progress / 2)
-                    spaces = " " * (50 - len(bars))
+                else:
+                    progress = 0
 
+                # FIXED: Safe rate calculations
+                rps = self.requests_sent / elapsed if elapsed > 0 else 0
+                pps = self.packets_sent / elapsed if elapsed > 0 else 0
+                bps = self.bytes_sent / elapsed if elapsed > 0 else 0
+
+                # Progress bar
+                bars = "█" * int(progress / 2)
+                spaces = " " * (50 - len(bars))
+
+                # FIXED: Show appropriate metrics based on attack type
+                if self.packets_sent > 0:  # UDP/TCP/ICMP attacks
                     stats = f"""
-{CYAN}[=== ATTACK STATUS ===]{RESET}
-{GREEN}Progress:{RESET} [{bars}{spaces}] {progress:.1f}%
-{GREEN}Time:{RESET} {int(elapsed)}s / {duration}s | Remaining: {int(remaining)}s
-{GREEN}Requests:{RESET} {self.requests_sent:,} | {GREEN}Packets:{RESET} {self.packets_sent:,}
-{GREEN}RPS:{RESET} {rps:.1f} | {GREEN}PPS:{RESET} {pps:.1f} | {GREEN}Bandwidth:{RESET} {bps / 1024 / 1024:.2f} MB/s
-{GREEN}Threads Active:{RESET} {threading.active_count()}
-{YELLOW}Press Ctrl+C to abort attack{RESET}
+    {CYAN}[=== ATTACK STATUS ===]{RESET}
+    {GREEN}Progress:{RESET} [{bars}{spaces}] {progress:.1f}%
+    {GREEN}Time:{RESET} {elapsed:.1f}s / {duration}s | {GREEN}Remaining:{RESET} {remaining:.1f}s
+    {GREEN}Requests:{RESET} {self.requests_sent:,} | {GREEN}Packets:{RESET} {self.packets_sent:,}
+    {GREEN}RPS:{RESET} {rps:.1f} | {GREEN}PPS:{RESET} {pps:.1f} | {GREEN}Bandwidth:{RESET} {bps / 1024 / 1024:.2f} MB/s
+    {GREEN}Threads Active:{RESET} {threading.active_count()}
+    {YELLOW}Press Ctrl+C to abort attack{RESET}
+                    """
+                else:  # HTTP Flood only
+                    stats = f"""
+    {CYAN}[=== ATTACK STATUS ===]{RESET}
+    {GREEN}Progress:{RESET} [{bars}{spaces}] {progress:.1f}%
+    {GREEN}Time:{RESET} {elapsed:.1f}s / {duration}s | {GREEN}Remaining:{RESET} {remaining:.1f}s
+    {GREEN}Requests Sent:{RESET} {self.requests_sent:,}
+    {GREEN}Data Sent:{RESET} {self.bytes_sent / 1024 / 1024:.2f} MB
+    {GREEN}RPS:{RESET} {rps:.1f} | {GREEN}Bandwidth:{RESET} {bps / 1024 / 1024:.2f} MB/s
+    {GREEN}Threads Active:{RESET} {threading.active_count()}
+    {YELLOW}Press Ctrl+C to abort attack{RESET}
                     """
 
-                    os.system("cls" if os.name == "nt" else "clear")
-                    print(stats)
-
+                os.system("cls" if os.name == "nt" else "clear")
+                print(stats)
                 time.sleep(1)
 
         except KeyboardInterrupt:
             print(f"\n{YELLOW}[⚠️] Attack aborted by user{RESET}")
             self.attack_running = False
+        except Exception as e:
+            print(f"{RED}[❌] Monitor Error: {e}{RESET}")
 
     def generate_attack_report(self, attack_type, target, duration):
         total_time = time.time() - self.start_time
 
+        # FIXED: Safe calculations
+        avg_rps = self.requests_sent / total_time if total_time > 0 else 0
+        avg_pps = self.packets_sent / total_time if total_time > 0 else 0
+        avg_bps = self.bytes_sent / total_time if total_time > 0 else 0
+
         report = f"""
-{CYAN}╔═══════════════════════════════════════════════════════╗
-║                   ATTACK COMPLETED                    ║
-╚═══════════════════════════════════════════════════════╝{RESET}
+    {CYAN}╔═══════════════════════════════════════════════════════╗
+    ║                   ATTACK COMPLETED                    ║
+    ╚═══════════════════════════════════════════════════════╝{RESET}
 
-{GREEN}[📋] Attack Summary:{RESET}
-  • Type: {attack_type}
-  • Target: {target}
-  • Duration: {total_time:.2f} seconds
-  • Requests: {self.requests_sent:,}
-  • Packets: {self.packets_sent:,}
-  • Data Sent: {self.bytes_sent / 1024 / 1024:.2f} MB
+    {GREEN}[📋] Attack Summary:{RESET}
+      • Type: {attack_type}
+      • Target: {target}
+      • Duration: {total_time:.2f} seconds
+      • Requests: {self.requests_sent:,}
+      • Packets: {self.packets_sent:,}
+      • Data Sent: {self.bytes_sent / 1024 / 1024:.2f} MB
 
-{GREEN}[⚡] Performance Metrics:{RESET}
-  • Avg RPS: {self.requests_sent / total_time:.1f if total_time > 0 else 0}
-  • Avg PPS: {self.packets_sent / total_time:.1f if total_time > 0 else 0}
-  • Bandwidth: {self.bytes_sent / total_time / 1024 / 1024:.2f if total_time > 0 else 0} MB/s
+    {GREEN}[⚡] Performance Metrics:{RESET}
+      • Avg RPS: {avg_rps:.1f}
+      • Avg PPS: {avg_pps:.1f}
+      • Avg Bandwidth: {avg_bps / 1024 / 1024:.2f} MB/s
 
-{GREEN}[📊] Efficiency Rating:{RESET}
-  • Impact Level: {random.choice(['HIGH', 'MODERATE', 'SEVERE'])}
-  • Target Status: {random.choice(['IMPACTED', 'UNRESPONSIVE', 'DEGRADED'])}
-  • Attack Success: {random.randint(70, 99)}%
+    {GREEN}[📊] Efficiency Rating:{RESET}
+      • Impact Level: {random.choice(['HIGH', 'MODERATE', 'SEVERE'])}
+      • Target Status: {random.choice(['IMPACTED', 'UNRESPONSIVE', 'DEGRADED'])}
+      • Attack Success: {random.randint(70, 99)}%
 
-{RED}[⚠️] Attack completed at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}{RESET}
-"""
+    {RED}[⚠️] Attack completed at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}{RESET}
+    """
         print(report)
 
         self.logger.log_attack(attack_type, target, total_time, self.requests_sent + self.packets_sent)
